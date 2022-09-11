@@ -5,7 +5,7 @@ from time import sleep
 bot = telepot.Bot('5641283166:AAEiLUp81ecbOuE28-OEWfntiVLjGVkwbsk')
 
 with sync_playwright() as p:
-    browser = p.chromium.launch(headless=False)
+    browser = p.chromium.launch()
     page = browser.new_page()
     while True:
         print('-='*20)
