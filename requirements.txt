@@ -1,0 +1,2 @@
+playwright==1.24.1
+telepot==12.7

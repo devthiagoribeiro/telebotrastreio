@@ -1,28 +1,22 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
+from playwright.sync_api import sync_playwright
+import telepot
 from time import sleep
-import urllib, telepot
 
-print('-='*20)
-print('INICIANDO BOT...')
-print('-='*20)
-
-navegador = webdriver.Chrome(executable_path='chromedriver.exe')
 bot = telepot.Bot('5641283166:AAEiLUp81ecbOuE28-OEWfntiVLjGVkwbsk')
 
-while True:
-    print('-='*20)
-    print('BOT INICIADO')
-    print('-='*20)
-    navegador.get('https://ssw.inf.br/2/rastreamento_pf?')
-    sleep(5)
-    navegador.find_element(By.XPATH, '//*[@id="cnpjdest"]').send_keys('08276822550')
-    sleep(2)
-    navegador.find_element(By.XPATH, '//*[@id="btn_rastrear"]').click()
-    info = navegador.find_element(By.XPATH, '/html/body/div[5]/div[1]/div[3]/table[2]/tbody/tr[2]/td[3]/p[1]').text
-    msg = urllib.parse.quote(info)
-    numero = '5574999132363'
-    print(info)
-    bot.sendMessage(1167845071, info)
-    sleep(14400)
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False)
+    page = browser.new_page()
+    while True:
+        print('-='*20)
+        print('BOT INICIADO')
+        print('-='*20)
+        page.goto('https://ssw.inf.br/2/rastreamento_pf?')
+        sleep(5)
+        page.locator('//*[@id="cnpjdest"]').fill('08276822550')
+        page.locator('//*[@id="btn_rastrear"]').click()
+        sleep(2)
+        info = page.locator('body > div:nth-child(5) > div.table > div:nth-child(3) > table:nth-child(4) > tbody > tr:nth-child(2) > td:nth-child(3) > p:nth-child(2)').all_text_contents()
+        print(info)
+        bot.sendMessage(1167845071, info)
+        sleep(14400)
